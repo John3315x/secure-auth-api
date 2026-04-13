@@ -34,7 +34,7 @@ Este proyecto soluciona esto mediante:
 
 ## 🏗️ Arquitectura del sistema
 
-
+![Login](resources/5.png)
 
 ---
 

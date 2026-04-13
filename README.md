@@ -34,19 +34,19 @@ Este proyecto soluciona esto mediante:
 
 ## 🏗️ Arquitectura del sistema
 
-<!-- 📌 Insertar aquí imagen de arquitectura -->
+
 
 ---
 
-## 🔄 Flujo de autenticación
+## 🔄 Flujo de autenticación y autorización
 
-<!-- 📌 Insertar aquí imagen del flujo login → refresh -->
+![Login](resources/4.png)
 
 ---
 
 ## 🗄️ Modelo de base de datos
 
-<!-- 📌 Insertar aquí imagen del modelo (users - refresh_tokens) -->
+![Login](resources/1.png)
 
 ---
 

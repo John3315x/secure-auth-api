@@ -121,7 +121,9 @@ Authorization: Bearer <token>
 
 ## 🧪 Ejemplos de uso
 
-<!-- 📌 Insertar aquí screenshots de Postman o requests -->
+![Login](resources/2.png)
+
+![Login](resources/3.png)
 
 ---
 

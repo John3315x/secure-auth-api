@@ -1,0 +1,174 @@
+# 🔐 Autenticación y Autorización con JWT y Roles en Spring Boot
+
+## 🧠 Conceptos clave
+
+* **Autenticación**: Verificar quién es el usuario
+* **Autorización**: Verificar qué puede hacer
+* **JWT (JSON Web Token)**: Token que contiene la identidad del usuario
+* **Stateless**: El servidor no guarda sesiones
+
+---
+
+## ⚙️ Flujo completo de seguridad
+
+1. El cliente envía una request con JWT
+2. `SecurityConfig` intercepta la request
+3. `JwtFilter` valida el token
+4. Se obtiene el usuario desde la base de datos
+5. Se extrae el rol
+6. Se crea un objeto de autenticación
+7. Se guarda en `SecurityContext`
+8. Spring valida permisos según `SecurityConfig`
+9. Se permite o bloquea el acceso
+
+---
+
+## 🧱 Estructura del sistema
+
+### 1. Enum Role
+
+```java
+public enum Role {
+    USER,
+    ADMIN
+}
+```
+
+---
+
+### 2. Entidad User
+
+```java
+@Enumerated(EnumType.STRING)
+private Role role;
+```
+
+---
+
+### 3. Generación de JWT
+
+```java
+.setSubject(user.getEmail())
+```
+
+El subject debe ser el mismo campo usado para buscar en la base de datos.
+
+---
+
+## 🔐 JwtFilter (Responsabilidad)
+
+* Extraer token del header
+* Validar token
+* Obtener usuario desde DB
+* Obtener rol
+* Crear autenticación
+* Insertar en SecurityContext
+
+Ejemplo clave:
+
+```java
+new SimpleGrantedAuthority("ROLE_" + role)
+```
+
+---
+
+## ⚙️ SecurityConfig (Responsabilidad)
+
+* Definir rutas públicas y protegidas
+* Definir roles requeridos
+* Registrar el JwtFilter
+* Desactivar sesiones
+
+Ejemplo:
+
+```java
+.requestMatchers("/auth/**").permitAll()
+.requestMatchers("/admin/**").hasRole("ADMIN")
+.requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+```
+
+---
+
+## 🔥 Prefijo ROLE_
+
+Spring Security espera roles con el formato:
+
+```
+ROLE_USER
+ROLE_ADMIN
+```
+
+Por eso se usa:
+
+```java
+"ROLE_" + role
+```
+
+---
+
+## 🧪 Códigos de respuesta
+
+| Código | Significado    |
+| ------ | -------------- |
+| 401    | No autenticado |
+| 403    | No autorizado  |
+
+---
+
+## ⚔️ Ejemplos de acceso
+
+| Usuario | Endpoint | Resultado     |
+| ------- | -------- | ------------- |
+| USER    | /user    | 200 OK        |
+| USER    | /admin   | 403 Forbidden |
+| ADMIN   | /admin   | 200 OK        |
+
+---
+
+## ⚠️ Errores comunes
+
+* No usar `@Enumerated(EnumType.STRING)`
+* Valores en DB en minúsculas
+* No usar prefijo `ROLE_`
+* No configurar `SecurityContextHolder`
+* Mezclar username con email
+
+---
+
+## 🧠 JWT vs Base de Datos
+
+### JWT con roles
+
+* Más rápido
+* Puede quedar desactualizado
+
+### DB con roles (recomendado)
+
+* Más seguro
+* Refleja cambios en tiempo real
+
+---
+
+## 🧭 Resumen final
+
+* JWT identifica al usuario
+* DB define el rol real
+* JwtFilter autentica
+* SecurityConfig autoriza
+
+---
+
+## 🚀 Nivel alcanzado
+
+Sistema completo de:
+
+* Autenticación con JWT
+* Autorización por roles
+* Seguridad stateless
+* Integración con base de datos
+
+---
+
+## 🏁 Conclusión
+
+Se implementó un sistema moderno de seguridad backend basado en JWT, con validación de usuarios y control de acceso por roles, siguiendo prácticas utilizadas en entornos profesionales.

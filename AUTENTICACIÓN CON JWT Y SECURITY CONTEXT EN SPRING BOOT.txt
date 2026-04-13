@@ -1,0 +1,216 @@
+AUTENTICACIÓN CON JWT Y SECURITY CONTEXT EN SPRING BOOT
+
+---
+
+1. CONCEPTO GENERAL
+
+Este sistema de autenticación es STATELESS.
+
+Esto significa:
+
+* El servidor NO guarda sesiones
+* Cada request se autentica desde cero
+* El cliente envía un JWT en cada request
+
+---
+
+2. LOGIN (AUTENTICACIÓN INICIAL)
+
+Flujo:
+
+1. El usuario envía:
+
+   * email
+   * password
+
+2. El backend valida:
+
+   * busca el usuario en DB
+   * compara contraseña con hash (BCrypt)
+
+3. Si es válido:
+
+   * se genera un JWT (access token)
+   * se genera un refresh token (guardado en DB)
+
+4. Se responde:
+
+{
+"accessToken": "...",
+"refreshToken": "..."
+}
+
+---
+
+3. REQUEST PROTEGIDA (FLUJO PRINCIPAL)
+
+Cada vez que el cliente hace una petición:
+
+GET /api/data
+Authorization: Bearer <JWT>
+
+---
+
+4. JWT FILTER (CORAZÓN DEL SISTEMA)
+
+El JwtFilter se ejecuta en cada request.
+
+Pasos:
+
+1. Obtiene el header:
+   Authorization: Bearer token
+
+2. Extrae el token
+
+3. Valida el token:
+
+   * firma
+   * expiración
+
+4. Extrae información:
+
+   * email (subject)
+   * rol (claim)
+
+---
+
+5. CREACIÓN DEL AUTHENTICATION
+
+Si el token es válido:
+
+Se crea:
+
+UsernamePasswordAuthenticationToken(
+email,
+null,
+authorities
+)
+
+Donde:
+
+* email = identidad del usuario (principal)
+* authorities = roles (ROLE_USER, ROLE_ADMIN)
+
+---
+
+6. SECURITY CONTEXT
+
+Luego se ejecuta:
+
+SecurityContextHolder.getContext().setAuthentication(authentication)
+
+Esto significa:
+
+* Spring ahora sabe quién eres
+* Spring sabe qué permisos tienes
+
+IMPORTANTE:
+Este contexto solo vive durante la request
+
+---
+
+7. ACCESO EN CONTROLLERS
+
+Puedes obtener el usuario así:
+
+Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+String email = auth.getName();
+
+Esto devuelve el email del usuario autenticado
+
+---
+
+8. AUTORIZACIÓN (ROLES)
+
+Spring usa los roles para permitir o bloquear acceso:
+
+Ejemplo:
+
+.hasRole("ADMIN")
+
+Internamente compara:
+
+ROLE_ADMIN
+
+Si no coincide:
+→ 403 Forbidden
+
+---
+
+9. FIN DE LA REQUEST
+
+Cuando termina la request:
+
+* El SecurityContext se destruye
+* NO se guarda en memoria
+* NO hay sesión persistente
+
+---
+
+10. REFRESH TOKEN (SESIONES)
+
+El refresh token sí se guarda en DB
+
+Representa una sesión:
+
+* permite generar nuevos access tokens
+* puede ser revocado
+* tiene expiración
+
+Flujo:
+
+1. Access token expira
+2. Cliente usa refresh token
+3. Backend valida en DB
+4. Genera nuevo access token
+
+---
+
+11. LOGOUT
+
+El logout NO elimina el JWT
+
+Lo que hace es:
+
+* marcar el refresh token como revoked = true
+
+Esto impide generar nuevos access tokens
+
+---
+
+12. RESUMEN GENERAL
+
+JWT:
+
+* identifica al usuario
+* se envía en cada request
+* es temporal
+
+SecurityContext:
+
+* guarda la autenticación actual
+* solo vive durante la request
+
+Refresh Token:
+
+* representa la sesión
+* vive en la base de datos
+* permite renovar acceso
+
+---
+
+13. IDEA CLAVE
+
+Cada request hace esto:
+
+1. recibe JWT
+2. valida JWT
+3. reconstruye usuario
+4. establece contexto
+5. ejecuta lógica
+6. destruye contexto
+
+---
+
+FIN

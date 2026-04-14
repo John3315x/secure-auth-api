@@ -20,7 +20,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                // ❌ Desactiva CSRF (porque es API)
+                // ❌ Desactiva CSRF porque es API
                 .csrf(csrf -> csrf.disable())
 
                 // 🔥 SIN SESIONES (clave para JWT)
@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // 👈 protegido (SI)
                 )
 
-                // 🔑 Agrega tu filtro JWT
+                // 🔑 Agregar filtro JWT
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

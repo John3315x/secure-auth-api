@@ -18,6 +18,7 @@ public class TestController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    // POST - Obtiene el Name() del  contexto de seguridad (subject del token valido), en este caso el email
     @GetMapping("/authenticated")
     public String test() {
         return SecurityContextHolder.getContext().getAuthentication().getName();

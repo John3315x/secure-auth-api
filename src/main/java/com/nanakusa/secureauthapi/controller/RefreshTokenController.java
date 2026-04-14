@@ -43,6 +43,8 @@ public class RefreshTokenController {
     // GET - Obtener todos los refresh tokens por email
     @GetMapping("/byEmail")
     public ResponseEntity<List<RefreshToken>> getRefreshTokensByEmail() {
+
+        //SE OBTIENE EL EMAIL DEL CONTEXTO DE SEGURIDAD (EL CONTEXTO SE CREA SOLO SI EL TOKEN PROPORCIONADO ES VALIDO)
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         String email = null;

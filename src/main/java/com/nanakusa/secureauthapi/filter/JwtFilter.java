@@ -41,9 +41,9 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
             String email = JwtUtil.validateToken(token);
 
-            if (email != null) {
+            if (email != null) {//SI EL TOKEN ES VALIDO
 
-                // 🔥 CONSULTA A LA DB
+                // CONSULTA A LA DB
                 User user = userRepository.findByEmail(email).orElse(null);
 
                 if (user != null) {

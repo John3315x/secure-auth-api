@@ -38,7 +38,7 @@ public class AuthController {
         return authService.login(request.getEmail(), request.getPassword(), httpRequest);
     }
 
-    // POST - Registrar usuario
+    // POST - Registrar usuario (solo para produccion) ❗❗ **IMPORTANTE** Eliminar despues
     @PostMapping("/create")
     public User createUser(@RequestBody UserDto userDto) {
         User user = new User();

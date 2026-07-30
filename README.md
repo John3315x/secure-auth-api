@@ -1,106 +1,105 @@
 # 🔐 Secure Auth API
 
-Sistema de autenticación moderno desarrollado con **Spring Boot**, basado en arquitectura **stateless**, utilizando **JWT + Refresh Tokens + Roles**.
+A modern authentication system built with **Spring Boot**, based on a **stateless architecture**, using **JWT + Refresh Tokens + Role-Based Authorization**.
 
 ---
 
-## 🚀 Descripción
+## 🚀 Overview
 
-Este proyecto implementa un sistema de autenticación completo similar al usado en aplicaciones reales:
+This project implements a complete authentication system similar to those used in real-world applications:
 
-* Autenticación con JWT (access token)
-* Manejo de sesiones con Refresh Tokens en base de datos
-* Autorización basada en roles (USER / ADMIN)
-* Arquitectura stateless (sin sesiones del servidor)
-
----
-
-## 🧠 Problema que resuelve
-
-Los sistemas tradicionales basados en sesiones (`JSESSIONID`) presentan limitaciones:
-
-* No escalan fácilmente
-* Difícil control de sesiones activas
-* Poca visibilidad de dispositivos conectados
-
-Este proyecto soluciona esto mediante:
-
-✔ Control de sesiones en DB
-✔ Revocación de accesos
-✔ Soporte multi-dispositivo
-✔ Arquitectura escalable
+* JWT authentication (Access Token)
+* Session management with Refresh Tokens stored in a database
+* Role-based authorization (USER / ADMIN)
+* Stateless architecture (no server-side sessions)
 
 ---
 
-## 🏗️ Arquitectura del sistema
+## 🧠 Problem It Solves
 
-![Login](resources/5.png)
+Traditional session-based authentication (`JSESSIONID`) has several limitations:
+
+* Difficult to scale
+* Limited control over active sessions
+* Poor visibility of connected devices
+
+This project addresses these issues by providing:
+
+✔ Database-backed session management  
+✔ Token revocation  
+✔ Multi-device support  
+✔ Scalable architecture
 
 ---
 
-## 🔄 Flujo de autenticación y autorización
+## 🏗️ System Architecture
 
-![Login](resources/4.png)
-
----
-
-## 🗄️ Modelo de base de datos
-
-![Login](resources/1.png)
+![System Architecture](resources/5.png)
 
 ---
 
-## ⚙️ Tecnologías utilizadas
+## 🔄 Authentication & Authorization Flow
+
+![Authentication Flow](resources/4.png)
+
+---
+
+## 🗄️ Database Model
+
+![Database Model](resources/1.png)
+
+---
+
+## ⚙️ Technologies Used
 
 * Java 17+
 * Spring Boot
 * Spring Security
 * Spring Data JPA
 * MySQL
-* JWT (Json Web Token)
+* JWT (JSON Web Token)
 * BCrypt
 
 ---
 
-## 🔐 Arquitectura de autenticación
+## 🔐 Authentication Architecture
 
-### 🧩 Flujo general
+### 🧩 General Flow
 
-1. Login con credenciales
-2. Generación de:
-
+1. User logs in with credentials.
+2. The system generates:
    * Access Token (JWT)
-   * Refresh Token (DB)
-3. Validación del JWT en cada request
-4. Renovación mediante refresh token
+   * Refresh Token (stored in the database)
+3. The JWT is validated on every request.
+4. A new Access Token can be issued using the Refresh Token.
 
 ---
 
-## 🔄 Refresh Tokens (sesiones)
+## 🔄 Refresh Tokens (Sessions)
 
-Los refresh tokens representan sesiones activas:
+Refresh Tokens represent active user sessions:
 
-* Persisten en base de datos
-* Tienen expiración
-* Pueden ser revocados
-* Permiten múltiples sesiones por usuario
-
----
-
-## 🛡️ Seguridad implementada
-
-* Hash de contraseñas con BCrypt
-* Validación de JWT en cada request
-* Autorización por roles
-* Revocación de sesiones (logout)
-* Rotación de refresh tokens
-* Registro de IP por sesión
+* Stored in the database
+* Have an expiration date
+* Can be revoked
+* Support multiple active sessions per user
 
 ---
 
-## 📌 Endpoints principales
+## 🛡️ Security Features
 
-### 🔐 Auth
+* Password hashing with BCrypt
+* JWT validation on every request
+* Role-based authorization
+* Session revocation (logout)
+* Refresh Token rotation
+* IP address logging for each session
+
+---
+
+## 📌 Main Endpoints
+
+### 🔐 Authentication
 
 * `POST /auth/login`
 * `POST /auth/register`
@@ -109,9 +108,9 @@ Los refresh tokens representan sesiones activas:
 
 ---
 
-### 🔒 Protegidos
+### 🔒 Protected Endpoints
 
-Uso de JWT en header:
+JWT must be included in the request header:
 
 ```http
 Authorization: Bearer <token>
@@ -119,52 +118,52 @@ Authorization: Bearer <token>
 
 ---
 
-## 🧪 Ejemplos de uso
+## 🧪 Usage Examples
 
 ![Login](resources/2.png)
 
-![Login](resources/3.png)
+![Examples](resources/3.png)
 
 ---
 
-## 📈 Características destacadas
+## 📈 Key Features
 
-* Arquitectura stateless
-* Separación de responsabilidades
-* Uso de filtros personalizados (JwtFilter)
-* Manejo manual de sesiones (DB)
-* Preparado para escalabilidad
-
----
-
-## ⚠️ Buenas prácticas aplicadas
-
-* No confiar en datos del cliente
-* Validación contra base de datos
-* Uso de DTOs
-* Evitar sesiones del servidor
-* Uso correcto de roles (`ROLE_`)
+* Stateless architecture
+* Clear separation of responsibilities
+* Custom JWT filter (`JwtFilter`)
+* Database-backed session management
+* Designed for scalability
 
 ---
 
-## 🚀 Posibles mejoras
+## ⚠️ Best Practices Applied
 
-* Implementar `UserDetailsService`
-* Manejo global de errores (`@ControllerAdvice`)
-* Auditoría de acciones
-* Registro de dispositivos (User-Agent)
-* Dashboard de sesiones activas
-
----
-
-## 👨‍💻 Autor
-
-Proyecto enfocado en backend moderno, seguridad y arquitectura de autenticación real.
+* Never trust client-side data
+* Validate against the database
+* Use DTOs for data transfer
+* Avoid server-side sessions
+* Proper use of roles (`ROLE_`)
 
 ---
 
-## 🧭 Conclusión
+## 🚀 Possible Improvements
 
-Sistema de autenticación completo, seguro y escalable, alineado con prácticas utilizadas en aplicaciones modernas.
+* Implement `UserDetailsService`
+* Global exception handling (`@ControllerAdvice`)
+* Audit logging
+* Device tracking (User-Agent)
+* Active sessions dashboard
+
+---
+
+## 👨‍💻 Author
+
+A backend-focused project centered on modern authentication, security, and scalable architecture.
+
+---
+
+## 🧭 Conclusion
+
+A complete, secure, and scalable authentication system following best practices commonly used in modern backend applications.
 
 ---

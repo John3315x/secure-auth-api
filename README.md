@@ -1,169 +1,193 @@
 # 🔐 Secure Auth API
 
-A modern authentication system built with **Spring Boot**, based on a **stateless architecture**, using **JWT + Refresh Tokens + Role-Based Authorization**.
+A production-oriented authentication and authorization service built with **Spring Boot** and **Spring Security**, implementing a **stateless security architecture** based on **JWT**, **Refresh Tokens**, and **Role-Based Access Control (RBAC)**.
+
+The project demonstrates modern backend authentication practices, secure session management, and scalable API design.
 
 ---
 
-## 🚀 Overview
+## 📖 Overview
 
-This project implements a complete authentication system similar to those used in real-world applications:
+Secure Auth API provides a complete authentication solution for RESTful applications by combining short-lived **JWT Access Tokens** with persistent **Refresh Tokens** stored in a relational database.
 
-* JWT authentication (Access Token)
-* Session management with Refresh Tokens stored in a database
-* Role-based authorization (USER / ADMIN)
-* Stateless architecture (no server-side sessions)
+Unlike traditional server-side sessions, this approach enables scalable authentication while maintaining full control over active user sessions.
 
----
+### Core Capabilities
 
-## 🧠 Problem It Solves
-
-Traditional session-based authentication (`JSESSIONID`) has several limitations:
-
-* Difficult to scale
-* Limited control over active sessions
-* Poor visibility of connected devices
-
-This project addresses these issues by providing:
-
-✔ Database-backed session management  
-✔ Token revocation  
-✔ Multi-device support  
-✔ Scalable architecture
+* JWT-based authentication
+* Database-backed Refresh Tokens
+* Stateless security architecture
+* Role-Based Authorization (RBAC)
+* Secure logout with token revocation
+* Multi-device session support
+* BCrypt password hashing
 
 ---
 
-## 🏗️ System Architecture
+# 🏛️ System Architecture
 
 ![System Architecture](resources/5.png)
 
 ---
 
-## 🔄 Authentication & Authorization Flow
+# 🔄 Authentication Flow
+
+The authentication process follows a secure token-based workflow:
+
+1. The user authenticates using their credentials.
+2. The server validates the credentials.
+3. A short-lived **JWT Access Token** is generated.
+4. A long-lived **Refresh Token** is stored in the database.
+5. Every protected request is authenticated using the JWT.
+6. When the Access Token expires, a new one can be issued through the Refresh Token without requiring the user to log in again.
 
 ![Authentication Flow](resources/4.png)
 
 ---
 
-## 🗄️ Database Model
+# 🗄️ Database Design
+
+The authentication system persists refresh tokens to provide complete session management.
+
+Each active session stores information such as:
+
+* Associated user
+* Expiration date
+* Revocation status
+* Client IP address
+
+This allows administrators to track and invalidate sessions when necessary.
 
 ![Database Model](resources/1.png)
 
 ---
 
-## ⚙️ Technologies Used
+# ⚙️ Technology Stack
 
-* Java 17+
-* Spring Boot
-* Spring Security
-* Spring Data JPA
-* MySQL
-* JWT (JSON Web Token)
-* BCrypt
-
----
-
-## 🔐 Authentication Architecture
-
-### 🧩 General Flow
-
-1. User logs in with credentials.
-2. The system generates:
-   * Access Token (JWT)
-   * Refresh Token (stored in the database)
-3. The JWT is validated on every request.
-4. A new Access Token can be issued using the Refresh Token.
+| Technology          | Purpose                        |
+| ------------------- | ------------------------------ |
+| **Java 17**         | Programming Language           |
+| **Spring Boot**     | REST API Framework             |
+| **Spring Security** | Authentication & Authorization |
+| **Spring Data JPA** | Data Persistence               |
+| **Hibernate**       | ORM                            |
+| **MySQL**           | Database                       |
+| **JWT**             | Stateless Authentication       |
+| **BCrypt**          | Password Hashing               |
+| **Maven**           | Dependency Management          |
 
 ---
 
-## 🔄 Refresh Tokens (Sessions)
+# 🔒 Security Features
 
-Refresh Tokens represent active user sessions:
-
-* Stored in the database
-* Have an expiration date
-* Can be revoked
-* Support multiple active sessions per user
-
----
-
-## 🛡️ Security Features
-
-* Password hashing with BCrypt
-* JWT validation on every request
-* Role-based authorization
+* JWT authentication for every protected request
+* Refresh Token lifecycle management
 * Session revocation (logout)
-* Refresh Token rotation
-* IP address logging for each session
+* Role-Based Access Control (RBAC)
+* BCrypt password encryption
+* IP address registration for active sessions
+* Stateless request processing
+* Secure authorization filters
 
 ---
 
-## 📌 Main Endpoints
+# 📌 REST API
 
-### 🔐 Authentication
+## Authentication
 
-* `POST /auth/login`
-* `POST /auth/register`
-* `POST /auth/refresh`
-* `POST /auth/logout`
+| Method | Endpoint         | Description                 |
+| ------ | ---------------- | --------------------------- |
+| POST   | `/auth/register` | Register a new user         |
+| POST   | `/auth/login`    | Authenticate user           |
+| POST   | `/auth/refresh`  | Generate a new Access Token |
+| POST   | `/auth/logout`   | Revoke current session      |
 
 ---
 
-### 🔒 Protected Endpoints
+## Protected Resources
 
-JWT must be included in the request header:
+Authenticated requests must include:
 
 ```http
-Authorization: Bearer <token>
+Authorization: Bearer <access_token>
 ```
 
 ---
 
-## 🧪 Usage Examples
+# 🧪 API Examples
+
+### Login Request
 
 ![Login](resources/2.png)
+
+### API Usage
 
 ![Examples](resources/3.png)
 
 ---
 
-## 📈 Key Features
+# 🏗️ Design Principles
 
-* Stateless architecture
-* Clear separation of responsibilities
-* Custom JWT filter (`JwtFilter`)
-* Database-backed session management
-* Designed for scalability
+The project follows several backend development best practices:
 
----
-
-## ⚠️ Best Practices Applied
-
-* Never trust client-side data
-* Validate against the database
-* Use DTOs for data transfer
-* Avoid server-side sessions
-* Proper use of roles (`ROLE_`)
+* Separation of concerns
+* Layered architecture
+* Stateless authentication
+* DTO-based communication
+* Database-driven session management
+* Dependency Injection
+* Repository Pattern
+* RESTful API design
 
 ---
 
-## 🚀 Possible Improvements
+# 📈 Scalability Considerations
 
-* Implement `UserDetailsService`
+This authentication service was designed with scalability in mind by:
+
+* Eliminating server-side HTTP sessions
+* Supporting multiple simultaneous devices
+* Persisting refresh tokens independently
+* Using short-lived JWTs
+* Allowing token revocation without affecting other sessions
+
+---
+
+# 🚀 Future Enhancements
+
+Potential improvements include:
+
+* OAuth2 / OpenID Connect integration
+* Two-Factor Authentication (2FA)
+* UserDetailsService customization
 * Global exception handling (`@ControllerAdvice`)
 * Audit logging
-* Device tracking (User-Agent)
-* Active sessions dashboard
+* Device fingerprinting
+* Session management dashboard
+* Rate limiting
+* Email verification
+* Password recovery flow
 
 ---
 
-## 👨‍💻 Author
+# 👨‍💻 Learning Objectives
 
-A backend-focused project centered on modern authentication, security, and scalable architecture.
+This project was developed to gain practical experience with:
+
+* Authentication and Authorization
+* Spring Security
+* REST API Security
+* JWT and Refresh Token workflows
+* Secure password storage
+* Session lifecycle management
+* Backend architecture patterns
 
 ---
 
-## 🧭 Conclusion
+# 📄 License
 
-A complete, secure, and scalable authentication system following best practices commonly used in modern backend applications.
+This project is intended for educational purposes and portfolio demonstration.
 
 ---
+
+> **Secure Auth API** demonstrates the implementation of a modern authentication service following industry-standard security practices, making it a solid foundation for enterprise-grade Spring Boot applications.
